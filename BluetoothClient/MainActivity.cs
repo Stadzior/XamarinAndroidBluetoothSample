@@ -32,18 +32,16 @@ namespace BluetoothClient
 
             button.Click += delegate 
             {
-                //BluetoothAdapter.DefaultAdapter.StartDiscovery();
                 var uuid = Java.Util.UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
-                //var uuid = Java.Util.UUID.FromString("00001101-0000-1000-8000-00805f9b34fb");
-                //var pcDevice = BluetoothAdapter.DefaultAdapter.BondedDevices.Single(d => d.Name.Equals("ASUS USB-BT400"));
-                //var socket = pcDevice.CreateRfcommSocketToServiceRecord(uuid);
                 try
                 {
                     var serverSocket = BluetoothAdapter.DefaultAdapter.ListenUsingRfcommWithServiceRecord("SerialPort", uuid);
                     var socket = serverSocket.Accept();
                     serverSocket.Close();
+
+                    var timerTask = Task.Factory.StartNew(() => Task.Delay(10000));
                     button.Text = $"Connected{socket.RemoteDevice.Name}";
-                    while (true)
+                    while (timerTask.IsCompleted)
                     {
                         var receivedValue = (char)socket.InputStream.ReadByte();
                         if (receivedValue > 0)
@@ -54,16 +52,6 @@ namespace BluetoothClient
                 {
                     var hue = ex;
                 }
-                //var msg = Encoding.UTF8.GetBytes("huehuehue");
-                //socket.OutputStream.Write(msg, 0, msg.Length);
-
-
-
-                //var serverSocket = BluetoothAdapter.DefaultAdapter.ListenUsingRfcommWithServiceRecord("", uuid);
-                //var socket = serverSocket.Accept();
-                //button.Text = $"Connected{socket.RemoteDevice.Name}";
-                //serverSocket.Close();
-
             };
         }
 
