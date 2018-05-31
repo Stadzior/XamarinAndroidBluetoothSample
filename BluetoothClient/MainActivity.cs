@@ -38,10 +38,10 @@ namespace BluetoothClient
                     var serverSocket = BluetoothAdapter.DefaultAdapter.ListenUsingRfcommWithServiceRecord("SerialPort", uuid);
                     var socket = serverSocket.Accept();
                     serverSocket.Close();
-
-                    var timerTask = Task.Factory.StartNew(() => Task.Delay(10000));
                     button.Text = $"Connected{socket.RemoteDevice.Name}";
-                    while (timerTask.IsCompleted)
+                    var timerTask = Task.Factory.StartNew(() => Task.Delay(10000));
+
+                    while (!timerTask.IsCompleted)
                     {
                         var receivedValue = (char)socket.InputStream.ReadByte();
                         if (receivedValue > 0)
